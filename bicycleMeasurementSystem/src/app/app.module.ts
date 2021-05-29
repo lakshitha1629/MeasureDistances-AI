@@ -11,6 +11,8 @@ import { BannerComponent } from './home/banner/banner.component';
 import { SelectTypeComponent } from './home/select-type/select-type.component';
 import { UploaderComponent } from './home/uploader/uploader.component';
 import { AboutComponent } from './about/about.component';
+
+import { ImageUploaderModule } from 'ngx-image-uploader-next';
 @NgModule({
   declarations: [
     AppComponent,
@@ -25,7 +27,8 @@ import { AboutComponent } from './about/about.component';
   imports: [
     BrowserModule,
     AppRoutingModule,
-    NgbModule
+    NgbModule,
+    ImageUploaderModule
   ],
   providers: [],
   bootstrap: [AppComponent]
