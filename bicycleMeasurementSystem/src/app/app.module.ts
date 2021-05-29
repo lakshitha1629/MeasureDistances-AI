@@ -7,10 +7,12 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { NavComponent } from './nav/nav.component';
 import { FooterComponent } from './footer/footer.component';
 import { HomeComponent } from './home/home.component';
-import { AboutUsComponent } from './about-us/about-us.component';
 import { BannerComponent } from './home/banner/banner.component';
 import { SelectTypeComponent } from './home/select-type/select-type.component';
 import { UploaderComponent } from './home/uploader/uploader.component';
+import { AboutComponent } from './about/about.component';
+
+import { ImageUploaderModule } from 'ngx-image-uploader';
 
 @NgModule({
   declarations: [
@@ -18,15 +20,16 @@ import { UploaderComponent } from './home/uploader/uploader.component';
     NavComponent,
     FooterComponent,
     HomeComponent,
-    AboutUsComponent,
     BannerComponent,
     SelectTypeComponent,
-    UploaderComponent
+    UploaderComponent,
+    AboutComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
-    NgbModule
+    NgbModule,
+    ImageUploaderModule
   ],
   providers: [],
   bootstrap: [AppComponent]
