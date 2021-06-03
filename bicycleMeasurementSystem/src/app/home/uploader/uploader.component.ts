@@ -6,21 +6,19 @@ import { ImageUploaderOptions, FileQueueObject } from 'ngx-image-uploader-next';
   styleUrls: ['./uploader.component.scss']
 })
 export class UploaderComponent implements OnInit {
-  imageOptions: ImageUploaderOptions = {
-    uploadUrl: 'https://fancy-image-uploader-demo.azurewebsites.net/api/demo/upload',
-    cropEnabled: true,
-    thumbnailResizeMode: 'fill',
-    autoUpload: false,
-    resizeOnLoad: false,
+  options: ImageUploaderOptions = {
+    thumbnailHeight: 400,
     thumbnailWidth: 1150,
-    thumbnailHeight: 400
+    uploadUrl: 'http://some-server.com/upload',
+    allowedImageTypes: ['image/png', 'image/jpeg'],
   };
+
 
   constructor() { }
 
   ngOnInit(): void {
   }
-  // onUpload(file: FileQueueObject) {
-  //   console.log(file.response);
-  // }
+  onUpload(file: FileQueueObject) {
+    console.log(file.response);
+  }
 }

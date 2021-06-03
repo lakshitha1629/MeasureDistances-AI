@@ -23,22 +23,14 @@ ims=cv2.resize(imgR ,(3264,2448))
 cv2.imshow("finalImg" , ims)
 
 
-#imagePath ='fullIlmg.jpg'
-#image =cv2.imread('imagePath')
 
-#fullImg =func.screenCreate(image,4608,3456)
-
-
-imgRN = cv2.imread('sample_1.jpg')
-
-mask = func.findColor(imgRN)
-imgS = func.find_shapes(imgRN)
 #ref image for calibration
 img , corners ,length, pixelRatio =func.cameraCalibration(img)
 
 #applying the mouse event
-
-finalImg = cv2.imshow('finalImg',ims)
+#imgR = cv2.resize(imgR,(0,0),None,0.6,0.6)
+# imgR NEED TO REPLACE AS ims
+finalImg = cv2.imshow('finalImg',imgR)
 
 def mouse_click(event, x, y, flags, param):
     #define the points array
@@ -50,10 +42,10 @@ def mouse_click(event, x, y, flags, param):
         #save the coordinates in points of array
         points.append((x,y))
         #connect with line
-        if len(points) == 4:
+        if len(points) == 2:
           #imgR need to replaced as ims
           cv2.line(imgR,points[0],points[1],(0,0,255),2)
-          cv2.line(imgR,points[2],points[3],(0,0,255),2)
+          cv2.line(imgR,points[3],points[4],(0,0,255),2)
          #font for left click event
         print(x, ',',y)
         font = cv2.FONT_HERSHEY_SIMPLEX
@@ -63,12 +55,12 @@ def mouse_click(event, x, y, flags, param):
         cv2.imshow('finalImg', imgR)
         [x1, y1] = points[0]
         [x2, y2] = points[1]
-        [x3, y3] = points[2]
-        [x4, y4] = points[3]
+        [x3, y3] = points[3]
+        [x4, y4] = points[4]
         print(points[0])
         print(points[1])
-        print(points[2])
         print(points[3])
+        print(points[4])
         print('x1 :', x1, ',', 'y1 :', y1)
         print('x2 :', x2, ',', 'y2 :', y2)
         print('x3 :', x3, ',', 'y3 :', y3)

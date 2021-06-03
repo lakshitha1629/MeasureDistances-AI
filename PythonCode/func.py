@@ -2,15 +2,15 @@ import cv2
 import numpy as np
 import math
 
-# def screenCreate(image,camera_height=4608, camera_width=3456):
-#     # Create window with freedom of dimensions
-#     cv2.namedWindow("IMG",cv2.WINDOW_NORMAL)
+def screenCreate(image,camera_height=4608, camera_width=3456):
+    # Create window with freedom of dimensions
+    cv2.namedWindow("IMG",cv2.WINDOW_NORMAL)
 
-#     # Use camera resolution
-#     imS=cv2.resize(image,camera_height, camera_width)
-#     fullImg =cv2.imshow('IMG' , imS)
+    # Use camera resolution
+    imS=cv2.resize(image,camera_height, camera_width)
+    fullImg =cv2.imshow('IMG' , imS)
 
-#     return fullImg
+    return fullImg
 
 # this imS need to
 def findColor(imgRN):
@@ -45,20 +45,21 @@ def find_shapes(imgRN):
         elif len(approx) == 4:
             x, y, w, h = cv2.boundingRect(approx)
             aspectRatio = float(w) / h
-            print(aspectRatio)
+#             print(aspectRatio)
             if aspectRatio >= 0.95 and aspectRatio < 1.05:
                 cv2.putText(imgRN, "square", (x, y), cv2.FONT_HERSHEY_COMPLEX, 0.5, (0, 0, 0))
 
             else:
-                cv2.putText(imgRN, "rectangle", (x, y), cv2.FONT_HERSHEY_COMPLEX, 0.2, (0, 0, 0))
+                print("Not square")
+#                 cv2.putText(imgRN, "rectangle", (x, y), cv2.FONT_HERSHEY_COMPLEX, 0.2, (0, 0, 0))
 
 
-        elif len(approx) == 5:
-            cv2.putText(imgRN, "pentagon", (x, y), cv2.FONT_HERSHEY_COMPLEX, 0.5, (0, 0, 0))
-        elif len(approx) == 10:
-            cv2.putText(imgRN, "star", (x, y), cv2.FONT_HERSHEY_COMPLEX, 0.5, (0, 0, 0))
-        else:
-            cv2.putText(imgRN, "circle", (x, y), cv2.FONT_HERSHEY_COMPLEX, 0.5, (0, 0, 0))
+#         elif len(approx) == 5:
+#             cv2.putText(imgRN, "pentagon", (x, y), cv2.FONT_HERSHEY_COMPLEX, 0.5, (0, 0, 0))
+#         elif len(approx) == 10:
+#             cv2.putText(imgRN, "star", (x, y), cv2.FONT_HERSHEY_COMPLEX, 0.5, (0, 0, 0))
+#         else:
+#             cv2.putText(imgRN, "circle", (x, y), cv2.FONT_HERSHEY_COMPLEX, 0.5, (0, 0, 0))
 
     imgS =cv2.imshow('shapes', imgRN)
 
@@ -66,15 +67,15 @@ def find_shapes(imgRN):
 
 
 
-# def region_of_interest(image):
-#     height = image.shape[0]
-#     mask = np.zeros_like(image, np.uint8)
-#     req_height = 0.4*height
-#     cv2.rectangle(mask, (0, int(req_height)), (int(image.shape[1]), int(height)), (0, 255, 0), 5)
-#     masked_image = cv2.bitwise_and(image, mask)
-#     f_image = cv2.bitwise_not(masked_image)
+def region_of_interest(image):
+    height = image.shape[0]
+    mask = np.zeros_like(image, np.uint8)
+    req_height = 0.4*height
+    cv2.rectangle(mask, (0, int(req_height)), (int(image.shape[1]), int(height)), (0, 255, 0), 5)
+    masked_image = cv2.bitwise_and(image, mask)
+    f_image = cv2.bitwise_not(masked_image)
 
-#     return f_image
+    return f_image
 
  #image = cv2.imread('image2.jpg')
 
