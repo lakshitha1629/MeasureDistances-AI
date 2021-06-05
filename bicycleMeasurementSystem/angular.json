@@ -129,6 +129,7 @@
   },
   "defaultProject": "bicycleMeasurementSystem",
   "cli": {
-    "analytics": "43eb97fc-6a53-42b5-ba5b-e28abf0ec4a0"
+    "analytics": "43eb97fc-6a53-42b5-ba5b-e28abf0ec4a0",
+    "defaultCollection": "@datorama/akita"
   }
 }

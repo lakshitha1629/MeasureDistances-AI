@@ -13,6 +13,10 @@ import { UploaderComponent } from './home/uploader/uploader.component';
 import { AboutComponent } from './about/about.component';
 
 import { ImageUploaderModule } from 'ngx-image-uploader-next';
+import { NG_ENTITY_SERVICE_CONFIG } from '@datorama/akita-ng-entity-service';
+import { AkitaNgDevtools } from '@datorama/akita-ngdevtools';
+import { AkitaNgRouterStoreModule } from '@datorama/akita-ng-router-store';
+import { environment } from '../environments/environment';
 @NgModule({
   declarations: [
     AppComponent,
@@ -28,9 +32,13 @@ import { ImageUploaderModule } from 'ngx-image-uploader-next';
     BrowserModule,
     AppRoutingModule,
     NgbModule,
-    ImageUploaderModule
+    ImageUploaderModule,
+    environment.production ? [] : AkitaNgDevtools.forRoot(),
+    AkitaNgRouterStoreModule,
+
   ],
-  providers: [],
+  providers: [
+    { provide: NG_ENTITY_SERVICE_CONFIG, useValue: { baseUrl: environment.apiUrl } }],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
