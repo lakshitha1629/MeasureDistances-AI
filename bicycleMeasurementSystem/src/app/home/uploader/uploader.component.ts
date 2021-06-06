@@ -18,7 +18,9 @@ export class UploaderComponent implements OnInit {
 
   ngOnInit(): void {
   }
+
   onUpload(file: FileQueueObject) {
     console.log(file.response);
   }
+
 }

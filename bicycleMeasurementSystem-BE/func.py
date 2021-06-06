@@ -60,7 +60,6 @@ def cameraCalibration(imagePath, known_length=50.0):
     # point4
     strXY = str(x4) + ',' + str(y4)
     cv2.putText(img, strXY, (x4, y4), font, 0.2, (255, 255, 0), 1)
-#     cv2.imshow('RefImg', img)
     length = (((x2)-(x3))**2 + ((y2)-(y3))**2)**0.5
     x = length
     # converting to float

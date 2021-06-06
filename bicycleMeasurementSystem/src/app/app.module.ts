@@ -17,6 +17,7 @@ import { NG_ENTITY_SERVICE_CONFIG } from '@datorama/akita-ng-entity-service';
 import { AkitaNgDevtools } from '@datorama/akita-ngdevtools';
 import { AkitaNgRouterStoreModule } from '@datorama/akita-ng-router-store';
 import { environment } from '../environments/environment';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 @NgModule({
   declarations: [
     AppComponent,
@@ -30,6 +31,8 @@ import { environment } from '../environments/environment';
   ],
   imports: [
     BrowserModule,
+    FormsModule,
+    ReactiveFormsModule,
     AppRoutingModule,
     NgbModule,
     ImageUploaderModule,
