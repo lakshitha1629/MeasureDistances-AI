@@ -3,6 +3,9 @@ import { Component, OnInit } from '@angular/core';
 import { UploaderDataService } from 'src/app/core/state/uploader/uploader-data.service';
 import { Observable } from 'rxjs';
 import { ImageUploaderOptions, FileQueueObject } from 'ngx-image-uploader-next';
+import { UploaderService } from 'src/app/core/state/uploader/uploader.service';
+import { Uploader } from 'src/app/core/state/uploader/uploader.model';
+import { UploaderQuery } from 'src/app/core/state/uploader/uploader.query';
 
 @Component({
   selector: 'app-manual-analysis',
@@ -10,15 +13,24 @@ import { ImageUploaderOptions, FileQueueObject } from 'ngx-image-uploader-next';
   styleUrls: ['./manual-analysis.component.scss']
 })
 export class ManualAnalysisComponent implements OnInit {
+  uploaderItems$: Observable<Uploader[]>;
+  uploaderItemsLength: number;
   selectedFiles: FileList;
   progressInfos = [];
   message: string;
   pixelRatio: Number;
   active: Number = 0;
 
-  constructor(private uploadService: UploaderDataService) { }
+  constructor(private uploadService: UploaderDataService, private uploaderService: UploaderService, private uploaderQuery: UploaderQuery) { }
 
   ngOnInit(): void {
+    this.uploaderItems$ = this.uploaderQuery.selectAll().pipe(tap((uploaderItem) => {
+      console.log(uploaderItem);
+      this.uploaderItemsLength = uploaderItem.length;
+      this.pixelRatio = uploaderItem[0].pixelRatio;
+
+    }));
+
     if (this.uploadService.getFiles()) {
       this.message = 'Active';
     } else {
@@ -57,6 +69,10 @@ export class ManualAnalysisComponent implements OnInit {
           console.log(res.body);
           this.pixelRatio = res.body.pixelRatio;
           this.active = 1;
+          this.uploaderService.addUploaderItem({
+            id: 1,
+            pixelRatio: this.pixelRatio
+          } as Uploader);
         }
 
       },
@@ -68,4 +84,14 @@ export class ManualAnalysisComponent implements OnInit {
     )
   }
 
+  resetProject() {
+    this.uploaderService.deleteUploaderItem(1);
+    console.log("Clear Uploader DB");
+
+  }
+
 }
+function tap(arg0: (cartItems: any) => void): import("rxjs").OperatorFunction<Uploader[], Uploader[]> {
+  throw new Error('Function not implemented.');
+}
+

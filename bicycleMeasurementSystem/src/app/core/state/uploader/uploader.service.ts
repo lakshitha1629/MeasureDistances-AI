@@ -1,17 +1,20 @@
-import { Injectable } from '@angular/core';
-import { NgEntityService, NgEntityServiceConfig } from '@datorama/akita-ng-entity-service';
+import { Inject, Injectable } from '@angular/core';
 import { Uploader } from './uploader.model';
 import { UploaderStore, UploaderState } from './uploader.store';
 
 @Injectable({ providedIn: 'root' })
-export class UploaderService extends NgEntityService<UploaderState> {
+export class UploaderService {
 
-  constructor(protected store: UploaderStore) {
-    super(store);
+  constructor(@Inject('persistStorage') private persistStorage, protected uploaderStore: UploaderStore) {
   }
 
-  setItems(uploader: Uploader[]) {
-    this.store.set(uploader);
+  addUploaderItem(uploaderItem: Uploader) {
+    this.uploaderStore.add(uploaderItem);
+  }
+
+  deleteUploaderItem(id: number) {
+    this.uploaderStore.remove(id);
+    this.persistStorage.clearStore('uploader');
   }
 
 }
