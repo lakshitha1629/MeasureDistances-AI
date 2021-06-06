@@ -6,7 +6,7 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./select-type.component.scss']
 })
 export class SelectTypeComponent implements OnInit {
-
+  active = 1;
   constructor() { }
 
   ngOnInit(): void {

@@ -32,7 +32,7 @@ class Main(Resource):
 
 class GetRatio(Resource):
     def get(self):
-        return {"error":"Invalid format."}
+        return {"error":"Invalid Method."}
 
     def post(self):
         file_to_upload = request.files['file']
