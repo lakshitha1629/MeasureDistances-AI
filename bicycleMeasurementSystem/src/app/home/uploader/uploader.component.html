@@ -2,10 +2,10 @@
   <div class="container">
     <div class="row align-items-center">
       <div class="col-lg-12 col-sm-6">
-        <!-- <ngx-image-uploader
+        <ngx-image-uploader
           [options]="options"
           (upload)="onUpload($event)"
-        ></ngx-image-uploader> -->
+        ></ngx-image-uploader>
         <!-- <ngx-image-uploader
           [options]="imageOptions"
           #imageUploader
@@ -20,49 +20,6 @@
           Upload
         </button> -->
         <hr />
-        <div *ngFor="let progressInfo of progressInfos" class="mb-2">
-          <span>{{ progressInfo.fileName }}</span>
-          <div class="progress">
-            <div
-              class="progress-bar progress-bar-info progress-bar-striped"
-              role="progressbar"
-              attr.aria-valuenow="{{ progressInfo.value }}"
-              aria-valuemin="0"
-              aria-valuemax="100"
-              [ngStyle]="{ width: progressInfo.value + '%' }"
-            >
-              {{ progressInfo.value }}%
-            </div>
-          </div>
-        </div>
-
-        <label class="btn btn-default">
-          <input type="file" multiple (change)="selectFiles($event)" />
-        </label>
-
-        <button
-          class="btn btn-success"
-          [disabled]="!selectedFiles"
-          (click)="uploadFiles()"
-        >
-          Upload
-        </button>
-
-        <div class="alert alert-light" role="alert">{{ message }}</div>
-
-        <div class="card">
-          <div class="card-header">List of Files</div>
-          <ul
-            class="list-group list-group-flush"
-            *ngFor="let file of fileInfos | async"
-          >
-            <li class="list-group-item">
-              <a href="{{ file.url }}">{{ file.name }}</a>
-            </li>
-          </ul>
-        </div>
-
-        <!-- cccc -->
       </div>
     </div>
   </div>
