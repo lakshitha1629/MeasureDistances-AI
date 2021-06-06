@@ -1,5 +1,5 @@
 export interface Uploader {
-  pixelRatio: any,
+  pixelRatio: any;
 }
 
 export function createUploader(params: Partial<Uploader>) {

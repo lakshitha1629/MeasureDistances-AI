@@ -2,40 +2,79 @@
   <div class="container">
     <div class="row">
       <div class="col-lg-12">
-        <div class="feature-block d-lg-flex">
-          <div class="feature-item col-md-6 mb-lg-0 text-center">
-            <div class="feature-icon mb-4">
-              <i class="icofont-layers"></i>
-            </div>
-            <h4 class="mb-3">Manual Analysis</h4>
-            <p class="mb-4">
-              Manually selected key points using image processing techniques
-            </p>
-            <span style="color: lightslategray"
-              >The manual calibration system that would give more accurate
-              results which depend on chosen key points. If any user chose the
-              exact coordinates it was being resulted with accurate
-              measurements.
-            </span>
+        <div
+          class="feature-block d-lg-flex"
+          ngbNav
+          #nav="ngbNav"
+          [(activeId)]="active"
+          style="flex-wrap: nowrap"
+        >
+          <div class="col-md-6 mb-lg-0 text-center" [ngbNavItem]="1">
+            <a ngbNavLink class="feature-item p-5">
+              <div class="feature-icon mb-4">
+                <i class="icofont-layers"></i>
+              </div>
+              <h4 class="mb-3">Manual Analysis</h4>
+              <p class="mb-4">
+                Manually selected key points using image processing techniques
+              </p>
+              <span style="color: lightslategray"
+                >The manual calibration system that would give more accurate
+                results which depend on chosen key points. If any user chose the
+                exact coordinates it was being resulted with accurate
+                measurements.
+              </span>
+            </a>
+            <ng-template ngbNavContent>
+              <section class="section about">
+                <div class="container">
+                  <div class="row align-items-center">
+                    <div class="col-lg-12 col-sm-6">
+                      <h2>Manual Analysis</h2>
+                      <app-manual-analysis></app-manual-analysis>
+                    </div>
+                  </div>
+                </div>
+              </section>
+            </ng-template>
           </div>
 
-          <div class="feature-item col-md-6 mb-lg-0 text-center">
-            <div class="feature-icon mb-4">
-              <i class="icofont-light-bulb"></i>
-            </div>
-            <h4 class="mb-3">Points Identification & Analysis</h4>
-            <p class="mb-4">
-              Automatically identify the key points with ML and computer vision
-            </p>
-            <span style="color: lightslategray"
-              >Automatically recognize the key points without any help. This
-              kind of approach will be beneficial for any user. Because it does
-              not require any kind of pre-knowledge for bicycle
-              measurements.</span
-            >
+          <div class="col-md-6 mb-lg-0 text-center" [ngbNavItem]="2">
+            <a ngbNavLink class="feature-item p-5">
+              <div class="feature-icon mb-4">
+                <i class="icofont-light-bulb"></i>
+              </div>
+              <h4 class="mb-3">Points Identification & Analysis</h4>
+              <p class="mb-4">
+                Automatically identify the key points with ML and computer
+                vision
+              </p>
+              <span style="color: lightslategray"
+                >Automatically recognize the key points without any help. This
+                kind of approach will be beneficial for any user. Because it
+                does not require any kind of pre-knowledge for bicycle
+                measurements.</span
+              >
+            </a>
+            <ng-template ngbNavContent>
+              <section class="section about">
+                <div class="container">
+                  <div class="row align-items-center">
+                    <div class="col-lg-12 col-sm-6">
+                      <h2>Points Identification & Analysis</h2>
+                      <app-ml-analysis></app-ml-analysis>
+                    </div>
+                  </div>
+                </div>
+              </section>
+            </ng-template>
           </div>
         </div>
       </div>
     </div>
   </div>
 </section>
+
+<hr />
+
+<div [ngbNavOutlet]="nav"></div>

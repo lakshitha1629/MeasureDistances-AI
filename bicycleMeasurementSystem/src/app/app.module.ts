@@ -18,6 +18,8 @@ import { AkitaNgDevtools } from '@datorama/akita-ngdevtools';
 import { AkitaNgRouterStoreModule } from '@datorama/akita-ng-router-store';
 import { environment } from '../environments/environment';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { ManualAnalysisComponent } from './home/manual-analysis/manual-analysis.component';
+import { MlAnalysisComponent } from './home/ml-analysis/ml-analysis.component';
 @NgModule({
   declarations: [
     AppComponent,
@@ -27,7 +29,9 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
     BannerComponent,
     SelectTypeComponent,
     UploaderComponent,
-    AboutComponent
+    AboutComponent,
+    ManualAnalysisComponent,
+    MlAnalysisComponent
   ],
   imports: [
     BrowserModule,
