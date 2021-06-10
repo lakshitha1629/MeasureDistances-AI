@@ -1,7 +1,4 @@
-// var x;
-// var y;
-var clicks = 0;
-var lastClick = [0, 0];
+
 
 import { HttpEvent, HttpEventType, HttpResponse } from '@angular/common/http';
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
@@ -34,8 +31,8 @@ export class ManualAnalysisComponent implements OnInit {
   fileInput: ElementRef;
   @ViewChild('canvasInput')
   canvasInput: ElementRef;
-  @ViewChild('canvasOutput')
-  canvasOutput: ElementRef;
+  // @ViewChild('canvasOutput')
+  // canvasOutput: ElementRef;
 
   constructor(private ngOpenCVService: NgOpenCVService,
     private uploadService: UploaderDataService,
@@ -76,8 +73,71 @@ export class ManualAnalysisComponent implements OnInit {
             return this.ngOpenCVService.loadImageToHTMLCanvas(`${reader.result}`, this.canvasInput.nativeElement);
           }),
           tap(() => {
-            this.clearOutputCanvas();
-            // this.findFaceAndEyes();
+            let srcImg = cv.imread(this.canvasInput.nativeElement.id);
+            let dst = new cv.Mat();
+            let dsize = new cv.Size(500, 500);
+            cv.resize(srcImg, dst, dsize, 0, 0, cv.INTER_AREA);
+            cv.imshow(<HTMLCanvasElement>document.getElementById('canvasOutput'), dst);
+            srcImg.delete();
+            dst.delete();
+
+            const canvas = <HTMLCanvasElement>document.getElementById('canvasOutput');
+            canvas.addEventListener("click", drawLine, false);
+
+            var clicks = 0;
+            var lastClick = [0, 0];
+            var x;
+            var y;
+
+            function getCursorPosition(e) {
+              if (e.pageX != undefined && e.pageY != undefined) {
+                x = e.pageX;
+                y = e.pageY;
+              } else {
+                x =
+                  e.clientX +
+                  document.body.scrollLeft +
+                  document.documentElement.scrollLeft;
+                y =
+                  e.clientY +
+                  document.body.scrollTop +
+                  document.documentElement.scrollTop;
+              }
+
+              return [x, y];
+            }
+
+            function drawLine(e) {
+              var canvas = <HTMLCanvasElement>document.getElementById('canvasOutput'),
+                context = this.getContext('2d');
+              // const canvads = <HTMLCanvasElement>document.getElementById('canvasOutput');
+              // const context = canvads.getContext("2d");
+              // // let context = this.getContext("2d");
+              // console.log(context);
+
+              // context.beginPath();
+              // context.moveTo(50, 50);
+              // context.lineTo(250, 150);
+              // context.stroke();
+
+              x = getCursorPosition(e)[0] - this.offsetLeft;
+              y = getCursorPosition(e)[1] - this.offsetTop;
+
+              if (clicks != 1) {
+                clicks++;
+              } else {
+                context.beginPath();
+                context.moveTo(lastClick[0], lastClick[1]);
+                context.lineTo(x, y);
+
+                context.strokeStyle = "#FF0000";
+                context.stroke();
+
+                clicks = 0;
+              }
+
+              lastClick = [x, y];
+            }
           }),
         )
         .subscribe(
@@ -135,79 +195,5 @@ export class ManualAnalysisComponent implements OnInit {
 
   }
 
-  clearOutputCanvas() {
-    // const context = this.canvasOutput.nativeElement.getContext('2d');
-    // context.clearRect(0, 0, this.canvasOutput.nativeElement.width, this.canvasOutput.nativeElement.height);
-
-    let srcImg = cv.imread(this.canvasInput.nativeElement.id);
-    let dst = new cv.Mat();
-    let dsize = new cv.Size(500, 500);
-    cv.resize(srcImg, dst, dsize, 0, 0, cv.INTER_AREA);
-    cv.imshow(this.canvasOutput.nativeElement.id, dst);
-    srcImg.delete();
-    dst.delete();
-
-
-    const canvas = <HTMLCanvasElement>document.getElementById('canvasOutput');
-    canvas.addEventListener("click", this.drawLine, false)
-  }
-
-
-  drawLine(e) {
-    const canvas = <HTMLCanvasElement>document.getElementById('canvasOutput');
-    const context = canvas.getContext("2d");
-    var x;
-    var y;
-
-    if (e.pageX || e.pageY) {
-      x = e.pageX;
-      y = e.pageY;
-    } else {
-      x = e.clientX + document.body.scrollLeft + document.documentElement.scrollLeft;
-      y = e.clientY + document.body.scrollTop + document.documentElement.scrollTop;
-    }
-
-    x -= canvas.offsetLeft;
-    y -= canvas.offsetTop;
-    console.log(x, y);
-
-    if (clicks != 1) {
-      clicks = clicks + 1;
-      console.log(clicks);
-    } else {
-      context.beginPath();
-      context.moveTo(lastClick[x], lastClick[y]);
-      context.lineTo(x, y);
-
-      context.strokeStyle = "#FF0000";
-      context.stroke();
-
-      console.log("ssss", clicks);
-
-      clicks = 0;
-    }
-
-    lastClick = [x, y];
-  }
-
-
-  // getCursorPosition(e) {
-  //   if (e.pageX != undefined && e.pageY != undefined) {
-  //     x = e.pageX;
-  //     y = e.pageY;
-  //   } else {
-  //     x =
-  //       e.clientX +
-  //       document.body.scrollLeft +
-  //       document.documentElement.scrollLeft;
-  //     y =
-  //       e.clientY +
-  //       document.body.scrollTop +
-  //       document.documentElement.scrollTop;
-  //   }
-  //   console.log(x, y);
-
-  //   return [x, y];
-  // }
 }
 
