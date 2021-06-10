@@ -66,9 +66,33 @@
 
 <hr />
 
-<button
-  class="btn btn-sm btn-outline-primary mr-2"
-  (click)="acc.toggle('toggle-1')"
->
-  Toggle first
-</button>
+<div *ngIf="openCVLoadResult | async as result">
+  <div class="error" *ngIf="result.loading">Waiting for OpenCV.js to load!</div>
+  <div class="ready" *ngIf="result.ready">OpenCV.js is ready!</div>
+  <div *ngIf="result.error">OpenCV.js load error!</div>
+</div>
+
+<div>
+  <!-- <canvas
+    #imageSrc
+    id="imageSrc"
+    title="base"
+    style="max-width: 100vh; max-height: 100vh"
+  ></canvas> -->
+  <canvas
+    #canvasOutput
+    id="canvasOutput"
+    style="max-width: 100vh; max-height: 100vh"
+  ></canvas>
+  <div class="caption">canvasOutput</div>
+  <div class="caption">
+    <input
+      (change)="loadImage($event)"
+      #fileInput
+      type="file"
+      id="fileInput"
+      name="file"
+      accept="image/*"
+    />
+  </div>
+</div>

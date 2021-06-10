@@ -1,7 +1,9 @@
 import { HttpEvent, HttpEventType, HttpResponse } from '@angular/common/http';
-import { Component, OnInit } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { UploaderDataService } from 'src/app/core/state/uploader/uploader-data.service';
-import { Observable } from 'rxjs';
+import { fromEvent, Observable } from 'rxjs';
+import { switchMap } from 'rxjs/operators';
+import { NgOpenCVService, OpenCVLoadResult } from 'ng-open-cv';
 import { ImageUploaderOptions, FileQueueObject } from 'ngx-image-uploader-next';
 import { UploaderService } from 'src/app/core/state/uploader/uploader.service';
 import { Uploader } from 'src/app/core/state/uploader/uploader.model';
@@ -13,6 +15,7 @@ import { UploaderQuery } from 'src/app/core/state/uploader/uploader.query';
   styleUrls: ['./manual-analysis.component.scss']
 })
 export class ManualAnalysisComponent implements OnInit {
+  openCVLoadResult: Observable<OpenCVLoadResult>;
   uploaderItems$: Observable<Uploader[]>;
   uploaderItemsLength: number;
   selectedFiles: FileList;
@@ -21,15 +24,21 @@ export class ManualAnalysisComponent implements OnInit {
   pixelRatio: Number;
   active: Number = 0;
 
-  constructor(private uploadService: UploaderDataService, private uploaderService: UploaderService, private uploaderQuery: UploaderQuery) { }
+  @ViewChild('fileInput')
+  fileInput: ElementRef;
+  @ViewChild('canvasOutput')
+  canvasOutput: ElementRef;
+
+  constructor(private ngOpenCVService: NgOpenCVService, private uploadService: UploaderDataService, private uploaderService: UploaderService, private uploaderQuery: UploaderQuery) { }
 
   ngOnInit(): void {
-    this.uploaderItems$ = this.uploaderQuery.selectAll().pipe(tap((uploaderItem) => {
-      console.log(uploaderItem);
-      this.uploaderItemsLength = uploaderItem.length;
-      this.pixelRatio = uploaderItem[0].pixelRatio;
+    this.openCVLoadResult = this.ngOpenCVService.isReady$;
+    // this.uploaderItems$ = this.uploaderQuery.selectAll().pipe(tap((uploaderItem) => {
+    //   console.log(uploaderItem);
+    //   this.uploaderItemsLength = uploaderItem.length;
+    //   this.pixelRatio = uploaderItem[0].pixelRatio;
 
-    }));
+    // }));
 
     if (this.uploadService.getFiles()) {
       this.message = 'Active';
@@ -90,8 +99,25 @@ export class ManualAnalysisComponent implements OnInit {
 
   }
 
-}
-function tap(arg0: (cartItems: any) => void): import("rxjs").OperatorFunction<Uploader[], Uploader[]> {
-  throw new Error('Function not implemented.');
+  loadImage(event) {
+    if (event.target.files.length) {
+      const reader = new FileReader();
+      const load$ = fromEvent(reader, 'load');
+      load$
+        .pipe(
+          switchMap(() => {
+            return this.ngOpenCVService.loadImageToHTMLCanvas(`${reader.result}`, this.canvasOutput.nativeElement);
+          })
+        )
+        .subscribe(
+          () => { },
+          err => {
+            console.log('Error loading image', err);
+          });
+      reader.readAsDataURL(event.target.files[0]);
+    }
+  }
+
+
 }
 
