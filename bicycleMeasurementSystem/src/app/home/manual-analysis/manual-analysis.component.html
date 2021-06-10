@@ -38,8 +38,8 @@
       </p>
       <div class="col-12 text-right">
         <canvas
-          #canvasOutput
-          id="canvasOutput"
+          #canvasInput
+          id="canvasInput"
           style="max-width: 20vh; max-height: 20vh"
         ></canvas>
         <label class="btn btn-default">
@@ -71,9 +71,9 @@
         <div class="ready" *ngIf="result.ready">OpenCV.js is ready!</div>
         <div *ngIf="result.error">OpenCV.js load error!</div>
       </div>
-      <div class="mt-3 text-center">
-        <canvas id="canvas" width="500" height="500"></canvas>
-      </div>
+      <div class="mt-3 text-center"></div>
     </ng-template>
   </ngb-panel>
 </ngb-accordion>
+
+<canvas #canvasOutput id="canvasOutput" width="500" height="500"></canvas>

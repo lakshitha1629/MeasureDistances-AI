@@ -1,8 +1,13 @@
+// var x;
+// var y;
+var clicks = 0;
+var lastClick = [0, 0];
+
 import { HttpEvent, HttpEventType, HttpResponse } from '@angular/common/http';
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { UploaderDataService } from 'src/app/core/state/uploader/uploader-data.service';
 import { fromEvent, Observable } from 'rxjs';
-import { switchMap } from 'rxjs/operators';
+import { switchMap, tap } from 'rxjs/operators';
 import { NgOpenCVService, OpenCVLoadResult } from 'ng-open-cv';
 import { ImageUploaderOptions, FileQueueObject } from 'ngx-image-uploader-next';
 import { UploaderService } from 'src/app/core/state/uploader/uploader.service';
@@ -24,14 +29,20 @@ export class ManualAnalysisComponent implements OnInit {
   pixelRatio: Number;
   active: Number = 0;
 
+
   @ViewChild('fileInput')
   fileInput: ElementRef;
+  @ViewChild('canvasInput')
+  canvasInput: ElementRef;
   @ViewChild('canvasOutput')
   canvasOutput: ElementRef;
-  @ViewChild('canvas')
-  canvas: ElementRef;
 
-  constructor(private ngOpenCVService: NgOpenCVService, private uploadService: UploaderDataService, private uploaderService: UploaderService, private uploaderQuery: UploaderQuery) { }
+  constructor(private ngOpenCVService: NgOpenCVService,
+    private uploadService: UploaderDataService,
+    private uploaderService: UploaderService,
+    private uploaderQuery: UploaderQuery) {
+
+  }
 
   ngOnInit(): void {
     this.openCVLoadResult = this.ngOpenCVService.isReady$;
@@ -62,8 +73,12 @@ export class ManualAnalysisComponent implements OnInit {
       load$
         .pipe(
           switchMap(() => {
-            return this.ngOpenCVService.loadImageToHTMLCanvas(`${reader.result}`, this.canvasOutput.nativeElement);
-          })
+            return this.ngOpenCVService.loadImageToHTMLCanvas(`${reader.result}`, this.canvasInput.nativeElement);
+          }),
+          tap(() => {
+            this.clearOutputCanvas();
+            // this.findFaceAndEyes();
+          }),
         )
         .subscribe(
           () => { },
@@ -120,5 +135,79 @@ export class ManualAnalysisComponent implements OnInit {
 
   }
 
+  clearOutputCanvas() {
+    // const context = this.canvasOutput.nativeElement.getContext('2d');
+    // context.clearRect(0, 0, this.canvasOutput.nativeElement.width, this.canvasOutput.nativeElement.height);
+
+    let srcImg = cv.imread(this.canvasInput.nativeElement.id);
+    let dst = new cv.Mat();
+    let dsize = new cv.Size(500, 500);
+    cv.resize(srcImg, dst, dsize, 0, 0, cv.INTER_AREA);
+    cv.imshow(this.canvasOutput.nativeElement.id, dst);
+    srcImg.delete();
+    dst.delete();
+
+
+    const canvas = <HTMLCanvasElement>document.getElementById('canvasOutput');
+    canvas.addEventListener("click", this.drawLine, false)
+  }
+
+
+  drawLine(e) {
+    const canvas = <HTMLCanvasElement>document.getElementById('canvasOutput');
+    const context = canvas.getContext("2d");
+    var x;
+    var y;
+
+    if (e.pageX || e.pageY) {
+      x = e.pageX;
+      y = e.pageY;
+    } else {
+      x = e.clientX + document.body.scrollLeft + document.documentElement.scrollLeft;
+      y = e.clientY + document.body.scrollTop + document.documentElement.scrollTop;
+    }
+
+    x -= canvas.offsetLeft;
+    y -= canvas.offsetTop;
+    console.log(x, y);
+
+    if (clicks != 1) {
+      clicks = clicks + 1;
+      console.log(clicks);
+    } else {
+      context.beginPath();
+      context.moveTo(lastClick[x], lastClick[y]);
+      context.lineTo(x, y);
+
+      context.strokeStyle = "#FF0000";
+      context.stroke();
+
+      console.log("ssss", clicks);
+
+      clicks = 0;
+    }
+
+    lastClick = [x, y];
+  }
+
+
+  // getCursorPosition(e) {
+  //   if (e.pageX != undefined && e.pageY != undefined) {
+  //     x = e.pageX;
+  //     y = e.pageY;
+  //   } else {
+  //     x =
+  //       e.clientX +
+  //       document.body.scrollLeft +
+  //       document.documentElement.scrollLeft;
+  //     y =
+  //       e.clientY +
+  //       document.body.scrollTop +
+  //       document.documentElement.scrollTop;
+  //   }
+  //   console.log(x, y);
+
+  //   return [x, y];
+  // }
 }
 
