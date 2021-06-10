@@ -28,6 +28,8 @@ export class ManualAnalysisComponent implements OnInit {
   fileInput: ElementRef;
   @ViewChild('canvasOutput')
   canvasOutput: ElementRef;
+  @ViewChild('canvas')
+  canvas: ElementRef;
 
   constructor(private ngOpenCVService: NgOpenCVService, private uploadService: UploaderDataService, private uploaderService: UploaderService, private uploaderQuery: UploaderQuery) { }
 
@@ -53,6 +55,25 @@ export class ManualAnalysisComponent implements OnInit {
   }
 
   selectFiles(e): void {
+    // image loaded to canvas
+    if (e.target.files.length) {
+      const reader = new FileReader();
+      const load$ = fromEvent(reader, 'load');
+      load$
+        .pipe(
+          switchMap(() => {
+            return this.ngOpenCVService.loadImageToHTMLCanvas(`${reader.result}`, this.canvasOutput.nativeElement);
+          })
+        )
+        .subscribe(
+          () => { },
+          err => {
+            console.log('Error loading image', err);
+          });
+      reader.readAsDataURL(e.target.files[0]);
+    }
+
+    //init progress
     this.progressInfos = [];
     this.selectedFiles = e.target.files;
   }
@@ -98,26 +119,6 @@ export class ManualAnalysisComponent implements OnInit {
     console.log("Clear Uploader DB");
 
   }
-
-  loadImage(event) {
-    if (event.target.files.length) {
-      const reader = new FileReader();
-      const load$ = fromEvent(reader, 'load');
-      load$
-        .pipe(
-          switchMap(() => {
-            return this.ngOpenCVService.loadImageToHTMLCanvas(`${reader.result}`, this.canvasOutput.nativeElement);
-          })
-        )
-        .subscribe(
-          () => { },
-          err => {
-            console.log('Error loading image', err);
-          });
-      reader.readAsDataURL(event.target.files[0]);
-    }
-  }
-
 
 }
 

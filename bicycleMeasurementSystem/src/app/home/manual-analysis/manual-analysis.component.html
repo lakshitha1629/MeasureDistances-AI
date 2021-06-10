@@ -33,10 +33,15 @@
         </div>
       </div>
       <p>
-        Anim pariatur cliche reprehenderit Anim pariatur cliche reprehenderit
-        Anim pariatur cliche reprehenderit
+        Please upload your bicycle image standard size. Because it affects the
+        final outcome.....
       </p>
       <div class="col-12 text-right">
+        <canvas
+          #canvasOutput
+          id="canvasOutput"
+          style="max-width: 20vh; max-height: 20vh"
+        ></canvas>
         <label class="btn btn-default">
           <input type="file" multiple (change)="selectFiles($event)" />
         </label>
@@ -59,40 +64,16 @@
   </ngb-panel>
   <ngb-panel id="toggle-2" title="Second Step">
     <ng-template ngbPanelContent>
-      Anim pariatur cliche reprehenderit
+      <div class="text-center" *ngIf="openCVLoadResult | async as result">
+        <div class="error" *ngIf="result.loading">
+          Waiting for OpenCV.js to load!
+        </div>
+        <div class="ready" *ngIf="result.ready">OpenCV.js is ready!</div>
+        <div *ngIf="result.error">OpenCV.js load error!</div>
+      </div>
+      <div class="mt-3 text-center">
+        <canvas id="canvas" width="500" height="500"></canvas>
+      </div>
     </ng-template>
   </ngb-panel>
 </ngb-accordion>
-
-<hr />
-
-<div *ngIf="openCVLoadResult | async as result">
-  <div class="error" *ngIf="result.loading">Waiting for OpenCV.js to load!</div>
-  <div class="ready" *ngIf="result.ready">OpenCV.js is ready!</div>
-  <div *ngIf="result.error">OpenCV.js load error!</div>
-</div>
-
-<div>
-  <!-- <canvas
-    #imageSrc
-    id="imageSrc"
-    title="base"
-    style="max-width: 100vh; max-height: 100vh"
-  ></canvas> -->
-  <canvas
-    #canvasOutput
-    id="canvasOutput"
-    style="max-width: 100vh; max-height: 100vh"
-  ></canvas>
-  <div class="caption">canvasOutput</div>
-  <div class="caption">
-    <input
-      (change)="loadImage($event)"
-      #fileInput
-      type="file"
-      id="fileInput"
-      name="file"
-      accept="image/*"
-    />
-  </div>
-</div>
