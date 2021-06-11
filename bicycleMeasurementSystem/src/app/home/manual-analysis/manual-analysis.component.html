@@ -43,7 +43,7 @@
           style="max-width: 20vh; max-height: 20vh"
         ></canvas>
         <label class="btn btn-default">
-          <input type="file" multiple (change)="selectFiles($event)" />
+          <input type="file" multiple (change)="selectFiles($event)" accept="image/*"/>
         </label>
         <div *ngIf="active == 0">
           <button
@@ -76,4 +76,5 @@
   </ngb-panel>
 </ngb-accordion>
 
-<canvas #canvasOutput id="canvasOutput" width="500" height="500"></canvas>
+<!-- <canvas #canvasOutput id="canvasOutput"></canvas> -->
+<canvas id="canvas" width="500" height="500"></canvas>
