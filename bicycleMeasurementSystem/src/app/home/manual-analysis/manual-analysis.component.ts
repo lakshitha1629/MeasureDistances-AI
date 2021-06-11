@@ -4,10 +4,10 @@ import { UploaderDataService } from 'src/app/core/state/uploader/uploader-data.s
 import { fromEvent, Observable } from 'rxjs';
 import { switchMap, tap } from 'rxjs/operators';
 import { NgOpenCVService, OpenCVLoadResult } from 'ng-open-cv';
-import { ImageUploaderOptions, FileQueueObject } from 'ngx-image-uploader-next';
 import { UploaderService } from 'src/app/core/state/uploader/uploader.service';
 import { Uploader } from 'src/app/core/state/uploader/uploader.model';
 import { UploaderQuery } from 'src/app/core/state/uploader/uploader.query';
+import { InteractiveFlowers } from './analysis/animations/interactive-flowers';
 
 @Component({
   selector: 'app-manual-analysis',
@@ -23,18 +23,22 @@ export class ManualAnalysisComponent implements OnInit {
   message: string;
   pixelRatio: Number;
   active: Number = 0;
+  Reach: Number;
+  saddleHeight: Number;
+  // saddleHeight: Observable<number>;
 
   @ViewChild('fileInput')
   fileInput: ElementRef;
   @ViewChild('canvasInput')
   canvasInput: ElementRef;
-  // @ViewChild('canvasOutput')
-  // canvasOutput: ElementRef;
+  @ViewChild('canvas')
+  canvas: ElementRef;
 
   constructor(private ngOpenCVService: NgOpenCVService,
     private uploadService: UploaderDataService,
     private uploaderService: UploaderService,
-    private uploaderQuery: UploaderQuery) {
+    private uploaderQuery: UploaderQuery,
+    private elementRef: ElementRef) {
   }
 
   ngOnInit(): void {
@@ -53,11 +57,6 @@ export class ManualAnalysisComponent implements OnInit {
     }
   }
 
-
-  onUpload(file: FileQueueObject) {
-    console.log(file.response);
-  }
-
   selectFiles(e): void {
     // image loaded to canvas
     if (e.target.files.length) {
@@ -66,82 +65,79 @@ export class ManualAnalysisComponent implements OnInit {
       load$
         .pipe(
           switchMap(() => {
-            return this.ngOpenCVService.loadImageToHTMLCanvas(`${reader.result}`, this.canvasInput.nativeElement);
+            return this.ngOpenCVService.loadImageToHTMLCanvas(`${reader.result}`, this.canvas.nativeElement);
           }),
-          // tap(() => {
-          //   // let srcImg = cv.imread(this.canvasInput.nativeElement.id);
-          //   // let dst = new cv.Mat();
-          //   // let dsize = new cv.Size(500, 500);
-          //   // cv.resize(srcImg, dst, dsize, 0, 0, cv.INTER_AREA);
-          //   // cv.imshow(<HTMLCanvasElement>document.getElementById('canvasOutput'), srcImg);
-          //   // srcImg.delete();
-          //   // dst.delete();
+          tap(() => {
+            this.canvas.nativeElement.addEventListener("click", drawLine);
+            var clicks = 0;
+            var lastClick = [0, 0];
 
-          //   // const canvas = <HTMLCanvasElement>document.getElementById('canvasOutput');
-          //   // canvas.addEventListener("click", drawLine, false);
+            function getCursorPosition(e) {
+              var x;
+              var y;
 
-          //   // var clicks = 0;
-          //   // var lastClick = [0, 0];
+              if (e.pageX != undefined && e.pageY != undefined) {
+                x = e.pageX;
+                y = e.pageY;
+              } else {
+                x =
+                  e.clientX +
+                  document.body.scrollLeft +
+                  document.documentElement.scrollLeft;
+                y =
+                  e.clientY +
+                  document.body.scrollTop +
+                  document.documentElement.scrollTop;
+              }
+              console.log(x, y);
 
-          //   // function getCursorPosition(e) {
-          //   //   var x;
-          //   //   var y;
-          //   //   if (e.pageX != undefined && e.pageY != undefined) {
-          //   //     x = e.pageX;
-          //   //     y = e.pageY;
-          //   //   } else {
-          //   //     x =
-          //   //       e.clientX +
-          //   //       document.body.scrollLeft +
-          //   //       document.documentElement.scrollLeft;
-          //   //     y =
-          //   //       e.clientY +
-          //   //       document.body.scrollTop +
-          //   //       document.documentElement.scrollTop;
-          //   //   }
+              return [x, y];
+            }
 
-          //   //   return [x, y];
-          //   // }
+            function drawLine(e) {
+              var x;
+              var y;
 
-          //   // function drawLine(e) {
-          //   //   var x;
-          //   //   var y;
-          //   //   x = getCursorPosition(e)[0] - this.offsetLeft;
-          //   //   y = getCursorPosition(e)[1] - this.offsetTop;
+              const context = this.getContext("2d");
 
-          //   //   if (clicks != 1) {
-          //   //     clicks++;
-          //   //     console.log(clicks);
-          //   //   } else {
-          //   //     // var canvas = <HTMLCanvasElement>document.getElementById('canvasOutput'),
-          //   //     const context = this.getContext('2d');
-          //   //     context.beginPath();
+              x = getCursorPosition(e)[0] - this.offsetLeft;
+              y = getCursorPosition(e)[1] - this.offsetTop;
 
-          //   //     var x1 = lastClick[0];
-          //   //     var x2 = lastClick[1];
-          //   //     console.log(x, y);
-          //   //     // console.log(lastClick[1]);
-          //   //     context.moveTo(258, 32);
-          //   //     context.lineTo(508, 33);
-          //   //     // context.moveTo(lastClick[0], lastClick[1]);
-          //   //     // context.lineTo(x, y);
-          //   //     context.strokeStyle = "#FF0000";
-          //   //     context.stroke();
-          //   //     console.log("nooo");
-          //   //     clicks = 0;
-          //   //   }
-          //   //   lastClick = [x, y];
-          //   //   console.log(lastClick)
-          //   // }
+              console.log(getCursorPosition(e)), 'ssssssss';
+              if (clicks != 1) {
+                clicks++;
+              } else {
+                context.beginPath();
+                context.moveTo(lastClick[0], lastClick[1]);
+                context.lineTo(x, y);
+                // this.saddleHeight$ = 0;
+                this.saddleHeight = ((x * 0.34401045807689073) - (y * 0.34401045807689073));
+                console.log(this.saddleHeight, "saddleHeight");
 
+                // this.uploaderService.addUploaderItem({
+                //   id: 1,
+                //   pixelRatio: this.pixelRatio,
+                //   saddleHeight: this.saddleHeight,
+                //   Reach: 0
+                // } as Uploader);
 
-          // }),
+                context.strokeStyle = "#FF0000";
+                context.stroke();
+
+                clicks = 0;
+              }
+
+              lastClick = [x, y];
+            }
+
+          })
         )
         .subscribe(
           () => { },
           err => {
             console.log('Error loading image', err);
           });
+
       reader.readAsDataURL(e.target.files[0]);
       reader.onload = (e: any) => {
         var myImage = new Image();
@@ -155,67 +151,15 @@ export class ManualAnalysisComponent implements OnInit {
           cv.imshow("canvas", dst);
           srcImg.delete();
           dst.delete();
-
-          document
-            .getElementById("canvas")
-            .addEventListener("click", drawLine);
+          // document
+          //   .getElementById("canvas")
+          //   .addEventListener("click", drawLine);
 
         };
+        // this.canvas.nativeElement.addEventListener("click", drawLine);
       }
 
-      const canvas = <HTMLCanvasElement>document.getElementById('canvas');
-
-      var clicks = 0;
-      var lastClick = [0, 0];
-      var x;
-      var y;
-
-      function getCursorPosition(e: MouseEvent) {
-
-        // var x;
-        // var y;
-
-        // x =
-        //   e.clientX +
-        //   document.body.scrollLeft +
-        //   document.documentElement.scrollLeft;
-        // y =
-        //   e.clientY +
-        //   document.body.scrollTop +
-        //   document.documentElement.scrollTop;
-
-        return [e.clientX +
-          (document.documentElement.scrollLeft || document.body.scrollLeft) -
-          canvas.offsetLeft, e.clientY +
-          (document.documentElement.scrollTop || document.body.scrollTop) -
-        canvas.offsetTop];
-      }
-
-      function drawLine(e) {
-        const context = this.getContext('2d');
-        console.log(getCursorPosition(e));
-        console.log(getCursorPosition(e)[0]);
-        console.log("sssssssssssssssssssss");
-        console.log(this.offsetLeft);
-        console.log(this.offsetLeft);
-        x = getCursorPosition(e)[0] - this.offsetLeft;
-        y = getCursorPosition(e)[1] - this.offsetTop;
-
-        if (clicks != 1) {
-          clicks++;
-          console.log(clicks);
-        } else {
-          context.beginPath();
-          context.moveTo(lastClick[0], lastClick[1]);
-          context.lineTo(x, y, 6);
-
-          context.strokeStyle = "#FF0000";
-          context.stroke();
-          clicks = 0;
-        }
-        lastClick = [x, y];
-        console.log(lastClick)
-      }
+      // const canvas = <HTMLCanvasElement>document.getElementById('canvas');
 
     }
 
@@ -266,5 +210,15 @@ export class ManualAnalysisComponent implements OnInit {
 
   }
 
+  getPosition(event) {
+    const canvas = <HTMLCanvasElement>document.getElementById('canvas');
+    const flowers = new InteractiveFlowers(canvas);
+    console.log(flowers);
+
+    const btn = document.getElementById('clearBtn');
+    btn.addEventListener('click', () => {
+      flowers.clearCanvas();
+    });
+  }
 }
 
