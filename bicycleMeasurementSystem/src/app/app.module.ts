@@ -20,6 +20,14 @@ import { environment } from '../environments/environment';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ManualAnalysisComponent } from './home/manual-analysis/manual-analysis.component';
 import { MlAnalysisComponent } from './home/ml-analysis/ml-analysis.component';
+import { NgOpenCVModule, OpenCVOptions } from "ng-open-cv";
+import { DataPassService } from './home/manual-analysis/analysis/services/data-pass.service';
+
+const openCVConfig: OpenCVOptions = {
+  scriptUrl: `assets/opencv/opencv.js`,
+  wasmBinaryFile: 'wasm/opencv_js.wasm',
+  usingWasm: true
+};
 @NgModule({
   declarations: [
     AppComponent,
@@ -42,9 +50,11 @@ import { MlAnalysisComponent } from './home/ml-analysis/ml-analysis.component';
     ImageUploaderModule,
     environment.production ? [] : AkitaNgDevtools.forRoot(),
     AkitaNgRouterStoreModule,
+    NgOpenCVModule.forRoot(openCVConfig)
 
   ],
-  providers: [
+  exports: [BrowserModule, NgOpenCVModule],
+  providers: [DataPassService,
     { provide: NG_ENTITY_SERVICE_CONFIG, useValue: { baseUrl: environment.apiUrl } }],
   bootstrap: [AppComponent]
 })

@@ -1,12 +1,12 @@
 <button class="btn btn-outline-warning mt-3 mb-3" (click)="resetProject()">
   <i class="icofont-ui-delete"></i> Reset Project
 </button>
-<ngb-accordion #acc="ngbAccordion" activeIds="toggle-1">
-  <ngb-panel
-    id="toggle-1"
-    title="First Step - get pixel Ratio --> {{ pixelRatio }}"
-  >
-    <ng-template ngbPanelContent>
+<div class="mb-5">
+  <div class="card">
+    <h5 class="card-header">
+      First Step - get pixel Ratio --> {{ pixelRatio }}
+    </h5>
+    <div class="card-body">
       <div class="text-right">
         <div *ngIf="message == 'Active'">
           <div class="badge badge-primary">Active API</div>
@@ -33,12 +33,22 @@
         </div>
       </div>
       <p>
-        Anim pariatur cliche reprehenderit Anim pariatur cliche reprehenderit
-        Anim pariatur cliche reprehenderit
+        Please upload your bicycle image standard size. Because it affects the
+        final outcome.....
       </p>
       <div class="col-12 text-right">
+        <!-- <canvas
+          #canvasInput
+          id="canvasInput"
+          style="max-width: 20vh; max-height: 20vh"
+        ></canvas> -->
         <label class="btn btn-default">
-          <input type="file" multiple (change)="selectFiles($event)" />
+          <input
+            type="file"
+            multiple
+            (change)="selectFiles($event)"
+            accept="image/*"
+          />
         </label>
         <div *ngIf="active == 0">
           <button
@@ -50,25 +60,55 @@
           </button>
         </div>
         <div *ngIf="active == 1">
-          <button class="btn btn-info" (click)="acc.toggle('toggle-2')">
-            Next Step
-          </button>
+          <button class="btn btn-info">Next Step</button>
         </div>
       </div>
-    </ng-template>
-  </ngb-panel>
-  <ngb-panel id="toggle-2" title="Second Step">
-    <ng-template ngbPanelContent>
-      Anim pariatur cliche reprehenderit
-    </ng-template>
-  </ngb-panel>
-</ngb-accordion>
+    </div>
+  </div>
 
-<hr />
+  <div class="card">
+    <h5 class="card-header">Second Step</h5>
+    <div class="card-body">
+      <div class="text-right" *ngIf="openCVLoadResult | async as result">
+        <div class="badge badge-success" *ngIf="result.loading">
+          Waiting for OpenCV.js to load!
+        </div>
+        <div class="badge badge-primary" *ngIf="result.ready">
+          OpenCV.js is ready!
+        </div>
+        <div class="badge badge-warning" *ngIf="result.error">
+          OpenCV.js load error!
+        </div>
+      </div>
 
-<button
-  class="btn btn-sm btn-outline-primary mr-2"
-  (click)="acc.toggle('toggle-1')"
->
-  Toggle first
-</button>
+      <hr />
+
+      <div class="row text-center">
+        <div class="col-8" style="height: 70vh">
+          <!-- <canvas #canvas id="canvas" width="500" height="500"></canvas> -->
+        </div>
+        <div class="col-4 text-justify output-box">
+          <h6 class="text-center">Final Output</h6>
+          <p>Pixel Ratio --> {{ pixelRatio }}</p>
+          <p>Point Count --> {{ pointCount }}</p>
+          <p>Saddle Height -->{{ saddleHeight }} cm</p>
+          <p>Reach -->{{ reach }} cm</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<canvas
+  #canvas
+  id="canvas"
+  width="500"
+  height="500"
+  style="
+    transition: none 0s ease 0s;
+    cursor: move;
+    position: relative;
+    top: -580px;
+    left: 76px;
+  "
+></canvas>
