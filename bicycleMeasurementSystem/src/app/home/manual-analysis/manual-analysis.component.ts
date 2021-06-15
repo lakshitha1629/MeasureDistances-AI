@@ -6,8 +6,8 @@ import { switchMap, tap } from 'rxjs/operators';
 import { NgOpenCVService, OpenCVLoadResult } from 'ng-open-cv';
 import { UploaderService } from 'src/app/core/state/uploader/uploader.service';
 import { Uploader } from 'src/app/core/state/uploader/uploader.model';
-import { UploaderQuery } from 'src/app/core/state/uploader/uploader.query';
 import { InteractiveFlowers } from './analysis/animations/interactive-flowers';
+import { DataPassService } from './analysis/services/data-pass.service';
 
 @Component({
   selector: 'app-manual-analysis',
@@ -21,11 +21,11 @@ export class ManualAnalysisComponent implements OnInit {
   selectedFiles: FileList;
   progressInfos = [];
   message: string;
-  pixelRatio: Number;
+  pixelRatio: any = 0;
   active: Number = 0;
-  Reach: Number;
-  saddleHeight: Number;
-  // saddleHeight: Observable<number>;
+  pointCount: Number;
+  saddleHeight: any = 0;
+  reach: any = 0;
 
   @ViewChild('fileInput')
   fileInput: ElementRef;
@@ -37,24 +37,52 @@ export class ManualAnalysisComponent implements OnInit {
   constructor(private ngOpenCVService: NgOpenCVService,
     private uploadService: UploaderDataService,
     private uploaderService: UploaderService,
-    private uploaderQuery: UploaderQuery,
-    private elementRef: ElementRef) {
+    private dataPassService: DataPassService) {
   }
 
   ngOnInit(): void {
     this.openCVLoadResult = this.ngOpenCVService.isReady$;
-    // this.uploaderItems$ = this.uploaderQuery.selectAll().pipe(tap((uploaderItem) => {
-    //   console.log(uploaderItem);
-    //   this.uploaderItemsLength = uploaderItem.length;
-    //   this.pixelRatio = uploaderItem[0].pixelRatio;
-
-    // }));
-
     if (this.uploadService.getFiles()) {
       this.message = 'Active';
     } else {
       this.message = 'Inactive';
     }
+    this.getFinalOutput();
+  }
+
+  getFinalOutput() {
+    this.dataPassService.getData().subscribe(info => {
+      console.log(info);
+      this.pointCount = info.flowerCenter.length;
+
+      if (this.pointCount == 2) {
+        const xValuePoint1 = info.flowerCenter[0].flowerCenter.centerPoint.x;
+        const yValuePoint1 = info.flowerCenter[0].flowerCenter.centerPoint.y;
+        const xValuePoint2 = info.flowerCenter[1].flowerCenter.centerPoint.x;
+        const yValuePoint2 = info.flowerCenter[1].flowerCenter.centerPoint.y;
+        const Ratio1 = this.pixelRatio;
+        console.log(Ratio1);
+        this.saddleHeight = (((xValuePoint1 - xValuePoint2) + (yValuePoint1 - yValuePoint2)) * Ratio1).toFixed(2);
+      }
+
+      if (this.pointCount == 4) {
+        const xValuePoint3 = info.flowerCenter[2].flowerCenter.centerPoint.x;
+        const yValuePoint3 = info.flowerCenter[2].flowerCenter.centerPoint.y;
+        const xValuePoint4 = info.flowerCenter[3].flowerCenter.centerPoint.x;
+        const yValuePoint4 = info.flowerCenter[3].flowerCenter.centerPoint.y;
+        const Ratio2 = this.pixelRatio;
+        console.log(Ratio2);
+        this.reach = (((xValuePoint3 - xValuePoint4) + (yValuePoint3 - yValuePoint4)) * Ratio2).toFixed(2);
+        console.log(this.reach);
+      }
+
+      if (this.pointCount == 5) {
+        const canvas = <HTMLCanvasElement>document.getElementById('canvas');
+        const flowers = new InteractiveFlowers(canvas, this.dataPassService);
+        flowers.clearCanvas();
+      }
+
+    });
   }
 
   selectFiles(e): void {
@@ -89,7 +117,7 @@ export class ManualAnalysisComponent implements OnInit {
                   document.body.scrollTop +
                   document.documentElement.scrollTop;
               }
-              console.log(x, y);
+              // console.log(x, y);
 
               return [x, y];
             }
@@ -103,37 +131,23 @@ export class ManualAnalysisComponent implements OnInit {
               x = getCursorPosition(e)[0] - this.offsetLeft;
               y = getCursorPosition(e)[1] - this.offsetTop;
 
-              console.log(getCursorPosition(e)), 'ssssssss';
               if (clicks != 1) {
                 clicks++;
               } else {
                 context.beginPath();
                 context.moveTo(lastClick[0], lastClick[1]);
                 context.lineTo(x, y);
-                // this.saddleHeight$ = 0;
-                this.saddleHeight = ((x * 0.34401045807689073) - (y * 0.34401045807689073));
-                console.log(this.saddleHeight, "saddleHeight");
-
-                // this.uploaderService.addUploaderItem({
-                //   id: 1,
-                //   pixelRatio: this.pixelRatio,
-                //   saddleHeight: this.saddleHeight,
-                //   Reach: 0
-                // } as Uploader);
-
                 context.strokeStyle = "#FF0000";
                 context.stroke();
-
                 clicks = 0;
               }
-
               lastClick = [x, y];
             }
-
           })
         )
         .subscribe(
-          () => { },
+          () => {
+          },
           err => {
             console.log('Error loading image', err);
           });
@@ -151,16 +165,10 @@ export class ManualAnalysisComponent implements OnInit {
           cv.imshow("canvas", dst);
           srcImg.delete();
           dst.delete();
-          // document
-          //   .getElementById("canvas")
-          //   .addEventListener("click", drawLine);
-
         };
-        // this.canvas.nativeElement.addEventListener("click", drawLine);
       }
-
-      // const canvas = <HTMLCanvasElement>document.getElementById('canvas');
-
+      const canvas = <HTMLCanvasElement>document.getElementById('canvas');
+      const flowers = new InteractiveFlowers(canvas, this.dataPassService);
     }
 
     //init progress
@@ -170,7 +178,6 @@ export class ManualAnalysisComponent implements OnInit {
 
   uploadFiles(): void {
     this.message = '';
-
     for (let i = 0; i < this.selectedFiles.length; i++) {
       this.upload(i, this.selectedFiles[i]);
     }
@@ -194,7 +201,6 @@ export class ManualAnalysisComponent implements OnInit {
             pixelRatio: this.pixelRatio
           } as Uploader);
         }
-
       },
       (error) => {
         this.progressInfos[idx].value = 0;
@@ -207,18 +213,7 @@ export class ManualAnalysisComponent implements OnInit {
   resetProject() {
     this.uploaderService.deleteUploaderItem(1);
     console.log("Clear Uploader DB");
-
   }
 
-  getPosition(event) {
-    const canvas = <HTMLCanvasElement>document.getElementById('canvas');
-    const flowers = new InteractiveFlowers(canvas);
-    console.log(flowers);
-
-    const btn = document.getElementById('clearBtn');
-    btn.addEventListener('click', () => {
-      flowers.clearCanvas();
-    });
-  }
 }
 

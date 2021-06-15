@@ -2,6 +2,7 @@ import { Flower } from '../models/flower';
 import { Point } from '../models/point';
 import { FlowerCenter } from '../models/flower-center';
 import { Petal } from '../models/petal';
+import { getValue } from '@datorama/akita';
 
 export class FlowerRandomizationService {
   private readonly colors = [
