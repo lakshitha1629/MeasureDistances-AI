@@ -24,6 +24,8 @@ export class ManualAnalysisComponent implements OnInit {
   pixelRatio: any = 0;
   active: Number = 0;
   pointCount: Number;
+  imgWidth: number = 0;
+  imgHeight: number = 0;
   saddleHeight: any = 0;
   reach: any = 0;
 
@@ -62,7 +64,8 @@ export class ManualAnalysisComponent implements OnInit {
         const yValuePoint2 = info.flowerCenter[1].flowerCenter.centerPoint.y;
         const Ratio1 = this.pixelRatio;
         console.log(Ratio1);
-        this.saddleHeight = (((xValuePoint1 - xValuePoint2) + (yValuePoint1 - yValuePoint2)) * Ratio1).toFixed(2);
+        const saddleHeight = ((((xValuePoint1 - xValuePoint2) * (this.imgWidth / 500)) + ((yValuePoint1 - yValuePoint2) * (this.imgHeight / 500))) * Ratio1).toFixed(2);
+        this.saddleHeight = (Math.abs(parseFloat(saddleHeight)) / 10).toFixed(2);
       }
 
       if (this.pointCount == 4) {
@@ -72,8 +75,9 @@ export class ManualAnalysisComponent implements OnInit {
         const yValuePoint4 = info.flowerCenter[3].flowerCenter.centerPoint.y;
         const Ratio2 = this.pixelRatio;
         console.log(Ratio2);
-        this.reach = (((xValuePoint3 - xValuePoint4) + (yValuePoint3 - yValuePoint4)) * Ratio2).toFixed(2);
+        const reach = ((((xValuePoint3 - xValuePoint4) * (this.imgWidth / 500)) + ((yValuePoint3 - yValuePoint4) * (this.imgHeight / 500))) * Ratio2).toFixed(2);
         console.log(this.reach);
+        this.reach = (Math.abs(parseFloat(reach)) / 10).toFixed(2);
       }
 
       if (this.pointCount == 5) {
@@ -195,10 +199,14 @@ export class ManualAnalysisComponent implements OnInit {
           console.log('Upload complete');
           console.log(res.body);
           this.pixelRatio = res.body.pixelRatio;
+          this.imgWidth = res.body.width;
+          this.imgHeight = res.body.height;
           this.active = 1;
           this.uploaderService.addUploaderItem({
             id: 1,
-            pixelRatio: this.pixelRatio
+            pixelRatio: this.pixelRatio,
+            imgWidth: this.imgWidth,
+            imgHeight: this.imgHeight
           } as Uploader);
         }
       },

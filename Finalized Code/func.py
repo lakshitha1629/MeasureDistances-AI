@@ -29,21 +29,36 @@ def tag_detection(img):
     ret, thresh = cv2.threshold(mask, 0, 255, cv2.THRESH_BINARY+cv2.THRESH_OTSU)
 
     # Find contours in thresh (find the triangles).
-    cnts = cv2.findContours(thresh, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)[-2]  # [-2] indexing takes return value before last (due to OpenCV compatibility issues).CHAIN_APPROX_NONE
+    cnts = cv2.findContours(thresh, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)[-2]  # [-2] indexing takes return value before last (due to OpenCV compatibility issues).
     font = cv2.FONT_HERSHEY_COMPLEX
-
+    
+    areaList = []
+    outputList = []
+            
     # Iterate triangle contours
     for c in cnts:
-        approx = cv2.approxPolyDP(c, 0.01*cv2.arcLength(c, True), True)
-#         cv2.drawContours(img, [approx], 0, (0), 3)
+        approx = cv2.approxPolyDP(c, 0.05*cv2.arcLength(c, True), True)
+    #     cv2.drawContours(img, [approx], 0, (0), 5)
         x = approx.ravel()[0]
         y = approx.ravel()[1]
 
-        if (cv2.contourArea(c) > 10) and (len(approx) == 5):  #  Ignore very small contours
-            x, y, w, h = cv2.boundingRect(c-10)
-            # Crop the bounding rectangle out of img
-            out = img[y:y+h+20, x:x+w+20].copy()
-            return out
+        if (len(approx) == 4):  #  Ignore very small contours
+            # Mark rectangle with green line
+            cv2.drawContours(img, [approx], 0, (0, 255, 0), 1)
+            # Get bounding rectangle
+            x, y, w, h = cv2.boundingRect(approx)
+            ar = float(w)/h
+            if (not(ar >= 0.95 and ar <= 1.05)) and ar>3:
+                areaList.append(cv2.contourArea(approx))
+                # Crop the bounding rectangle out of img
+                out = img[y-20:y+h+20, x-20:x+w+20].copy()
+                outputList.append(out)
+                
+    max_value = max(areaList)
+    max_index = areaList.index(max_value)
+    
+    return outputList[max_index]
+        
 
 
 def cameraCalibration( img, known_length=50.0):

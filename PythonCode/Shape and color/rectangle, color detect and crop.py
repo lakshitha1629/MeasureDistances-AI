@@ -1,15 +1,9 @@
-#!/usr/bin/env python
-# coding: utf-8
-
-# In[6]:
-
-
 import cv2
 import numpy as np
 import imutils
 
 # Read input image
-img = cv2.imread('ss.JPG')
+img = cv2.imread('w.jpg')
 
 # Convert from BGR to HSV color space
 hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
@@ -32,34 +26,23 @@ font = cv2.FONT_HERSHEY_COMPLEX
 
 # Iterate triangle contours
 for c in cnts:
-    approx = cv2.approxPolyDP(c, 0.01*cv2.arcLength(c, True), True)
-    cv2.drawContours(img, [approx], 0, (0), 5)
+    approx = cv2.approxPolyDP(c, 0.04*cv2.arcLength(c, True), True)
+#     cv2.drawContours(img, [approx], 0, (0), 5)
     x = approx.ravel()[0]
     y = approx.ravel()[1]
     
-    if (cv2.contourArea(c) > 10) and (len(approx) == 5):  #  Ignore very small contours
-        # Mark rectangle with blue line
-        cv2.drawContours(img, [c], -1, (0, 255, 0), 2)
-        cv2.putText(img, "Rectangle", (x, y), font, 1, (0))
+    if (len(approx) == 4):  #  Ignore very small contours
+        # Mark rectangle with green line
+        cv2.drawContours(img, [approx], 0, (0, 255, 0), 1)
         # Get bounding rectangle
-        x, y, w, h = cv2.boundingRect(c)
-        # Crop the bounding rectangle out of img
-        out = img[y:y+h, x:x+w, :].copy()
+        (x, y, w, h) = cv2.boundingRect(approx)
+        ar = w / float(h)
+        if (not(ar >= 0.95 and ar <= 1.05)) and (ar>3):
+            print("crop")
+            # Crop the bounding rectangle out of img
+            out = img[y:y+h, x:x+w, :].copy()
         
 cv2.imshow("shapes", img)
 cv2.imshow("Crop", out)
 cv2.waitKey(0)
 cv2.destroyAllWindows()
-
-
-# In[ ]:
-
-
-
-
-
-# In[ ]:
-
-
-
-

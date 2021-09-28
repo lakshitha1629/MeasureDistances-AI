@@ -49,8 +49,10 @@ class GetRatio(Resource):
         try:
             path = os.path.join(app.config['UPLOAD_FOLDER'], file_to_upload.filename)
             file_to_upload.save(path)
-            pixelRatio = cameraCalibration(path)
-            return {'pixelRatio':pixelRatio}
+            pixelRatio, wid, hgt = cameraCalibration(path)
+            return {'pixelRatio':pixelRatio,
+                    'width':wid,
+                    'height':hgt}
 
         except Exception as error:
             return {'error': error}
