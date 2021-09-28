@@ -1,6 +1,8 @@
 export interface Uploader {
   id?: number;
   pixelRatio?: number;
+  imgWidth?: number;
+  imgHeight?: number;
   saddleHeight?: number;
   Reach?: number;
   list?: any;
