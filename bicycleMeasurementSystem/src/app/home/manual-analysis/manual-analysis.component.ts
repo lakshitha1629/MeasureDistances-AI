@@ -65,7 +65,9 @@ export class ManualAnalysisComponent implements OnInit {
         const Ratio1 = this.pixelRatio;
         console.log(Ratio1);
         const saddleHeight = ((((xValuePoint1 - xValuePoint2) * (this.imgWidth / 500)) + ((yValuePoint1 - yValuePoint2) * (this.imgHeight / 500))) * Ratio1).toFixed(2);
-        this.saddleHeight = (Math.abs(parseFloat(saddleHeight)) / 10).toFixed(2);
+        // this.saddleHeight = (Math.abs(parseFloat(saddleHeight)) / 10).toFixed(2);
+        this.saddleHeight = (((xValuePoint1 - xValuePoint2) + (yValuePoint1 - yValuePoint2)) * Ratio1).toFixed(2);
+
       }
 
       if (this.pointCount == 4) {
@@ -77,7 +79,9 @@ export class ManualAnalysisComponent implements OnInit {
         console.log(Ratio2);
         const reach = ((((xValuePoint3 - xValuePoint4) * (this.imgWidth / 500)) + ((yValuePoint3 - yValuePoint4) * (this.imgHeight / 500))) * Ratio2).toFixed(2);
         console.log(this.reach);
-        this.reach = (Math.abs(parseFloat(reach)) / 10).toFixed(2);
+        // this.reach = (Math.abs(parseFloat(reach)) / 10).toFixed(2);
+        this.reach = (((xValuePoint3 - xValuePoint4) + (yValuePoint3 - yValuePoint4)) * Ratio2).toFixed(2);
+
       }
 
       if (this.pointCount == 5) {

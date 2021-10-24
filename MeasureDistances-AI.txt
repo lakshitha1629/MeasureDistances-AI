@@ -1,0 +1,33 @@
+https://docs.google.com/document/d/1RqOhL8h_eklsQk9MyEE_pTREKFe2nIgzDKerKkvUJjM/edit#
+
+------------------- Backend ------------------- 
+https://github.com/MertYacan/Measure-Cam
+https://mertyacan.com/comp/armeasure.html
+https://community.risingstack.com/opencv-tutorial-computer-vision-with-node-js/
+https://handmap.github.io/measuring-size-and-distance-opencv/
+https://www.pyimagesearch.com/2016/03/28/measuring-size-of-objects-in-an-image-with-opencv/
+https://developer.okta.com/blog/2019/03/25/build-crud-app-with-python-flask-angular
+https://realpython.com/flask-by-example-part-1-project-setup/
+https://github.com/paul-pias/Object-Detection-and-Distance-Measurement
+https://www.geeksforgeeks.org/finding-the-size-resolution-of-image-in-python/
+https://www.sqlshack.com/create-rest-apis-in-python-using-flask/
+https://flask.palletsprojects.com/en/1.1.x/quickstart/
+https://flask-restful.readthedocs.io/en/latest/
+https://cloudinary.com/blog/creating_an_api_with_python_flask_to_upload_files_to_cloudinary
+https://github.com/apryor6/flask_api_example
+
+
+------------------- Frontend --------------------
+https://angular.io/guide/setup-local
+https://datorama.github.io/akita/
+https://themefisher.com/products/novena-medical-template/
+https://www.npmjs.com/package/ngx-image-uploader
+https://stackblitz.com/github/ogix/ngx-image-uploader?file=src%2Fapp%2Fapp.module.ts
+https://docs.opencv.org/3.4/d0/d84/tutorial_js_usage.html
+https://medium.com/angular-in-depth/create-your-own-image-classifier-with-angular-and-tensorflow-js-5b1bc2391424
+https://github.com/devakone/ng-open-cv
+https://www.positronx.io/angular-image-upload-preview-crop-zoom-and-scale-example
+https://stackoverflow.com/questions/59334122/how-can-i-get-coordinates-of-points-of-contour-corners-in-opencv-js
+https://stackoverflow.com/questions/7731009/mouselistener-and-html5-canvas-object
+https://www.codegrepper.com/search.php?answer_removed=1&q=typescript%20detect%20mouse%20click%20on%20image%20drawn%20on%20canvas
+https://stackblitz.com/edit/canvas-interactive-flowers?file=models%2Fpetal.ts
