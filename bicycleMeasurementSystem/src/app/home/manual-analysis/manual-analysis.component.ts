@@ -63,11 +63,11 @@ export class ManualAnalysisComponent implements OnInit {
         const xValuePoint2 = info.flowerCenter[1].flowerCenter.centerPoint.x;
         const yValuePoint2 = info.flowerCenter[1].flowerCenter.centerPoint.y;
         const Ratio1 = this.pixelRatio;
-        console.log(Ratio1);
-        const saddleHeight = ((((xValuePoint1 - xValuePoint2) * (this.imgWidth / 500)) + ((yValuePoint1 - yValuePoint2) * (this.imgHeight / 500))) * Ratio1).toFixed(2);
-        // this.saddleHeight = (Math.abs(parseFloat(saddleHeight)) / 10).toFixed(2);
-        this.saddleHeight = (((xValuePoint1 - xValuePoint2) + (yValuePoint1 - yValuePoint2)) * Ratio1).toFixed(2);
+        const xValue = (xValuePoint1 - xValuePoint2) * (this.imgWidth / 1000);
+        const yValue = (yValuePoint1 - yValuePoint2) * (this.imgHeight / 750);
+        const squared = Math.pow(xValue, 2) + Math.pow(yValue, 2);
 
+        this.saddleHeight = ((Math.sqrt(squared) * Ratio1) * 0.1).toFixed(2);
       }
 
       if (this.pointCount == 4) {
@@ -76,12 +76,11 @@ export class ManualAnalysisComponent implements OnInit {
         const xValuePoint4 = info.flowerCenter[3].flowerCenter.centerPoint.x;
         const yValuePoint4 = info.flowerCenter[3].flowerCenter.centerPoint.y;
         const Ratio2 = this.pixelRatio;
-        console.log(Ratio2);
-        const reach = ((((xValuePoint3 - xValuePoint4) * (this.imgWidth / 500)) + ((yValuePoint3 - yValuePoint4) * (this.imgHeight / 500))) * Ratio2).toFixed(2);
-        console.log(this.reach);
-        // this.reach = (Math.abs(parseFloat(reach)) / 10).toFixed(2);
-        this.reach = (((xValuePoint3 - xValuePoint4) + (yValuePoint3 - yValuePoint4)) * Ratio2).toFixed(2);
+        const xValue = (xValuePoint3 - xValuePoint4) * (this.imgWidth / 1000);
+        const yValue = (yValuePoint3 - yValuePoint4) * (this.imgHeight / 750);
+        const squared = Math.pow(xValue, 2) + Math.pow(yValue, 2);
 
+        this.reach = ((Math.sqrt(squared) * Ratio2) * 0.1).toFixed(2);
       }
 
       if (this.pointCount == 5) {
@@ -168,7 +167,7 @@ export class ManualAnalysisComponent implements OnInit {
           let srcImg = cv.imread(myImage);
           console.log(srcImg);
           let dst = new cv.Mat();
-          let dsize = new cv.Size(500, 500);
+          let dsize = new cv.Size(1000, 750);
           cv.resize(srcImg, dst, dsize, 0, 0, cv.INTER_AREA);
           cv.imshow("canvas", dst);
           srcImg.delete();

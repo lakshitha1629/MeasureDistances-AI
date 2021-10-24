@@ -84,10 +84,7 @@
       <hr />
 
       <div class="row text-center">
-        <div class="col-8" style="height: 70vh">
-          <!-- <canvas #canvas id="canvas" width="500" height="500"></canvas> -->
-        </div>
-        <div class="col-4 text-justify output-box">
+        <div class="col-12 text-justify output-box">
           <h6 class="text-center">Final Output</h6>
           <p>Pixel Ratio --> {{ pixelRatio }}</p>
           <p>Original Image Size --> {{ imgWidth }} x {{ imgHeight }}</p>
@@ -103,13 +100,12 @@
 <canvas
   #canvas
   id="canvas"
-  width="500"
-  height="500"
+  width="1000"
+  height="750"
   style="
     transition: none 0s ease 0s;
     cursor: move;
     position: relative;
-    top: -580px;
-    left: 76px;
+    left: 25px;
   "
 ></canvas>
